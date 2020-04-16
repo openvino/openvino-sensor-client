@@ -50,6 +50,3 @@ while True:
 
   #battery     = splitted_line[6]
 
-  except:
-
-

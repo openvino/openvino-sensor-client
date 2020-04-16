@@ -23,6 +23,8 @@ services:
         build: .
         container_name: openvino-client
         privileged: true
+        devices:
+            - "/dev/ttyACM0:/dev/ttyACM0"
         environment:
             - "DATABASE_HOST=database"
             - "DATABASE_PORT=3306"
