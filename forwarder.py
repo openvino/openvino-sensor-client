@@ -17,7 +17,7 @@ print("\nSetting up enviroment for vinduinos and weather station")
 db = mysql.connector.connect(
   host=os.getenv("DATABASE_HOST", default = 'localhost') + ":" + os.getenv("DATABASE_PORT", default = '3306')  ,
   user=os.getenv("DATABASE_USERNAME", default = 'test'),
-  passwd=os.getenv("DATABASE_PASSWORD", default = 'test123),
+  passwd=os.getenv("DATABASE_PASSWORD", default = 'test123'),
   database=os.getenv("DATABASE_NAME", default = 'test_db')
 )
 
