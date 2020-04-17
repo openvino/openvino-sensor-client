@@ -3,7 +3,7 @@ version: '3'
 services:
 
     redundant-db:
-        image: mysql/mysql-server:latest
+        image: biarms/mysql:latest
         container_name: database
         ports:
             - 3306:3306
@@ -25,6 +25,7 @@ services:
         privileged: true
         devices:
             - "/dev/ttyACM0:/dev/ttyACM0"
+            - "/dev/gpiomem:/dev/gpiomem"
         environment:
             - "DATABASE_HOST=database"
             - "DATABASE_PORT=3306"
@@ -40,4 +41,4 @@ networks:
     internal:
                  
 volumes:
-    redundant-database:
+    redundant-db:

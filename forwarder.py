@@ -4,6 +4,7 @@ import sys
 import json
 import serial
 import time
+import subprocess
 
 print("\nSetting up enviroment for vinduinos and weather station")
 

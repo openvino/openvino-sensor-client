@@ -12,7 +12,7 @@ RUN python2 -m pip install tentacle_pi RPi.GPIO
 RUN python3 -m pip install pyserial
 #RUN python3 -m pip install requirements.txt
 
-CMD ["python3", "forwarder.py"]
+CMD python3 -u forwarder.py
 
 
 
