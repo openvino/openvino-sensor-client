@@ -207,13 +207,7 @@ except:
 	config.AM2315_Present = False
 	# print "------> See Readme to install tentacle_pi"
 
-
-
-
-
-# Main Loop - sleeps 10 seconds
 # Tests all I2C devices on WeatherPiArduino
-
 
 # Main Program
 
@@ -247,6 +241,8 @@ if (config.ADS1015_Present or config.ADS1115_Present):
     windDirection = weatherStation.current_wind_direction()
     windDirectionVoltage = weatherStation.current_wind_direction_voltage()
     data = data + ',"wind_direction":' + str(windDirection)
+else:
+	data = data + ',"wind_direction":null'
 
 if (config.BMP280_Present):
     temperature_bmp280 = format(bmp280.read_temperature())
@@ -254,6 +250,8 @@ if (config.BMP280_Present):
     altitude = format(bmp280.read_pressure()/1000)
     sealevel_pressure = format(bmp280.read_pressure()/1000)
     data = data + ',"pressure":' + str(pressure)
+else:
+	data = data + ',"pressure":null'
 
 totalRain = totalRain + weatherStation.get_current_rain_total()
 data = data + ',"rain":' + str(totalRain)
@@ -262,6 +260,8 @@ if (config.AM2315_Present):
     temperature, humidity, crc_check = am2315.sense()
     data = data + ',"temperature":' + str(temperature) 
     data = data + ',"humidity":' + str(humidity)
+else:
+	data = data + ',"temperature":null,"humidity":null'
 
 if (config.HTU21DF_Present):
 	HTU21DFOut = subprocess.check_output(["htu21dflib/htu21dflib","-l"])

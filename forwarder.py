@@ -49,6 +49,8 @@ while True:
   data.update({"sensor005": float(splitted_line[5])})
   data.update({"timestamp": int(time.time())})
 
+  data.update({"hash": str(time.time())})
+
   url = os.getenv("API_ENDPOINT", default = 'https://localhost:4040') + "/sensor_data"
   x = requests.post(url, data = data)
 
