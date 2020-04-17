@@ -191,15 +191,16 @@ class SDL_Pi_WeatherRack:
 			value = self.ads1015.readRaw(1, self.gain, self.sps) # AIN1 wired to wind vane on WeatherPiArduino
 
 			# now figure out if it is an ADS1015 or ADS1115
-			print "value="
-			print format(value, '#04X')
+			# print "value="
+			# print format(value, '#04X')
 			if ((0x0F & value) == 0):
 				config.ADS1015_Present = True
 				config.ADS1115_Present = False
 				# check again (1 out 16 chance of zero)
 				value = self.ads1015.readRaw(0, self.gain, self.sps) # AIN1 wired to wind vane on WeatherPiArduino
-				print "value2="
-				print format(value, '#04X')
+				# print "value2="
+				# 
+				# print format(value, '#04X')
 				if ((0x0F & value) == 0):
 					config.ADS1015_Present = True
 					config.ADS1115_Present = False
