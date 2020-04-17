@@ -64,7 +64,7 @@ while True:
   url = os.getenv("API_ENDPOINT", default = 'https://localhost:4040') + "/sensor_data"
   res = requests.post(url, data = data)
 
-  if res.status_code == 200:
+  if res.status_code != 200:
 
     cursor = db.cursor()
     sql = "INSERT INTO sensor_data (wind_velocity, wind_gust, wind_direction, pressure, rain, temperature, humidity, sensor_id, humidity2, humidity1, humidity05, humidity005, timestamp, hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
