@@ -240,28 +240,28 @@ totalRain = 0
 currentWindSpeed = weatherStation.current_wind_speed()/1.852
 currentWindGust = weatherStation.get_wind_gust()/1.852
 
-data = "{'wind_velocity':'" + str(currentWindSpeed) + "'"
-data = data + ",'wind_gust':'" + str(currentWindGust) + "'"
+data = '{"wind_velocity":' + str(currentWindSpeed)
+data = data + ',"wind_gust":' + str(currentWindGust)
 
 if (config.ADS1015_Present or config.ADS1115_Present):
     windDirection = weatherStation.current_wind_direction()
     windDirectionVoltage = weatherStation.current_wind_direction_voltage()
-    data = data + ",'wind_direction':'" + str(windDirection) + "'"
+    data = data + ',"wind_direction":' + str(windDirection)
 
 if (config.BMP280_Present):
     temperature_bmp280 = format(bmp280.read_temperature())
     pressure = format(bmp280.read_pressure()/1000)
     altitude = format(bmp280.read_pressure()/1000)
     sealevel_pressure = format(bmp280.read_pressure()/1000)
-    data = data + ",'pressure':'" + str(pressure) + "'"
+    data = data + ',"pressure":' + str(pressure)
 
 totalRain = totalRain + weatherStation.get_current_rain_total()
-data = data + ",'rain':'" + str(totalRain) + "'"
+data = data + ',"rain":' + str(totalRain)
 
 if (config.AM2315_Present):
     temperature, humidity, crc_check = am2315.sense()
-    data = data + ",'temperature':'" + str(temperature) + "'"
-    data = data + ",'humidity':'" + str(humidity) + "'"
+    data = data + ',"temperature":' + str(temperature) 
+    data = data + ',"humidity":' + str(humidity)
 
 if (config.HTU21DF_Present):
 	HTU21DFOut = subprocess.check_output(["htu21dflib/htu21dflib","-l"])
@@ -274,6 +274,6 @@ if (config.FRAM_Present):
 		value = random.randint(0,255)
 	fram.write8(x, value)
 
-data = data + "}"
+data = data + '}'
 
 print data
