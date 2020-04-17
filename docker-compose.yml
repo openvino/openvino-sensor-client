@@ -34,6 +34,7 @@ services:
             - "DATABASE_CHARSET=${DATABASE_CHARSET}"
             - "DATABASE_USERNAME=${DATABASE_USERNAME}"
             - "DATABASE_PASSWORD=${DATABASE_PASSWORD}"
+            - "API_ENDPOINT=${API_ENDPOINT}"
         networks:
             - internal
 
