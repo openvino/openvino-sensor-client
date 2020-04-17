@@ -261,7 +261,7 @@ data = data + "'rain':'" + str(totalRain) + "',"
 if (config.AM2315_Present):
     temperature, humidity, crc_check = am2315.sense()
     data = data + "'temperature':'" + str(temperature) + "',"
-    data = data + "'humidity':'" + str(humidity) + "'}"
+    data = data + "'humidity':'" + str(humidity) 
 
 if (config.HTU21DF_Present):
 	HTU21DFOut = subprocess.check_output(["htu21dflib/htu21dflib","-l"])
@@ -273,5 +273,7 @@ if (config.FRAM_Present):
 	for x in range(0,3):
 		value = random.randint(0,255)
 	fram.write8(x, value)
+
+data = data + "'}"
 
 print data
