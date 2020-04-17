@@ -21,8 +21,6 @@ except:
 import sys
 import time as time_
 
-sys.path.append('/home/pi/RaspberryPi-WeatherPiArduinoV2/Adafruit_ADS1x15')
-
 from Adafruit_ADS1x15 import ADS1x15
 
 import RPi.GPIO as GPIO
