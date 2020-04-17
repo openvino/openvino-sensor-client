@@ -1,10 +1,12 @@
 #!/usr/bin/python3 -u
 
 import sys
+import os
 import json
 import serial
 import time
 import subprocess
+import requests
 
 print("\nSetting up enviroment for vinduinos and weather station")
 
@@ -46,6 +48,9 @@ while True:
   data.update({"sensor05": float(splitted_line[4])})
   data.update({"sensor005": float(splitted_line[5])})
   data.update({"timestamp": int(time.time())})
+
+  url = os.getenv("API_ENDPOINT", default = 'https://localhost:4040') + "/sensor_data"
+  x = requests.post(url, data = data)
 
   print("Line was read and preprocessed: " + json.dumps(data))
 
