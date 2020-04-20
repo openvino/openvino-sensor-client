@@ -12,6 +12,8 @@ import subprocess
 import requests
 import mysql.connector
 
+#import enchaintesdk
+
 print("\nSetting up enviroment for vinduinos and weather station")
 
 db = mysql.connector.connect(
@@ -22,7 +24,16 @@ db = mysql.connector.connect(
   auth_plugin='mysql_native_password'
 )
 
+redundant_db = mysql.connector.connect(
+  host='database',
+  user=os.getenv("DATABASE_USERNAME", default = 'test'),
+  passwd=os.getenv("DATABASE_PASSWORD", default = 'test123'),
+  database=os.getenv("DATABASE_NAME", default = 'test_db'),
+  auth_plugin='mysql_native_password'
+)
+
 ser = serial.Serial('/dev/ttyACM0', 9600, timeout=900)
+disconected = False
 
 while True:
 
@@ -60,12 +71,21 @@ while True:
   data.update({"humidity05": float(splitted_line[4])})
   data.update({"humidity005": float(splitted_line[5])})
   data.update({"timestamp": datetime.fromtimestamp(time.time()).strftime("%Y-%m-%dT%H:%M:%S.00Z")})
-  data.update({"hash": str(time.time())}) #temporal
 
-  url = os.getenv("API_ENDPOINT", default = 'https://localhost:4040') + "/sensor_data"
-  res = requests.post(url, data = data)
+  #hash = enchaintesdk.write(data)
 
-  if res.status_code != 200:
+  data.update({"hash": str(time.time())})
+
+  try: 
+
+    if (disconected):
+      db = mysql.connector.connect(
+        host=os.getenv("DATABASE_HOST", default = 'localhost'),
+        user=os.getenv("DATABASE_USERNAME", default = 'test'),
+        passwd=os.getenv("DATABASE_PASSWORD", default = 'test123'),
+        database=os.getenv("DATABASE_NAME", default = 'test_db'),
+        auth_plugin='mysql_native_password'
+      )
 
     cursor = db.cursor()
     sql = "INSERT INTO sensor_data (wind_velocity, wind_gust, wind_direction, pressure, rain, temperature, humidity, sensor_id, humidity2, humidity1, humidity05, humidity005, timestamp, hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -73,6 +93,13 @@ while True:
     cursor.execute(sql, val)
     db.commit()
 
+  except:
+    redundant_cursor = redundant_db.cursor()
+    redundant_sql = "INSERT INTO sensor_data (wind_velocity, wind_gust, wind_direction, pressure, rain, temperature, humidity, sensor_id, humidity2, humidity1, humidity05, humidity005, timestamp, hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    redundant_val = tuple([value for _, value in data.items()])
+    redundant_cursor.execute(redundant_sql, redundant_val)
+    redundant_db.commit()
+  
   print("Line was read and preprocessed: " + json.dumps(data))
 
   #battery     = splitted_line[6]
