@@ -18,6 +18,7 @@ services:
             - internal
         volumes:
             - redundant-db:/var/lib/mysql
+            
 
     openvino-client:
         build: .
