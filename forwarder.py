@@ -19,6 +19,7 @@ db = mysql.connector.connect(
   user=os.getenv("DATABASE_USERNAME", default = 'test'),
   passwd=os.getenv("DATABASE_PASSWORD", default = 'test123'),
   database=os.getenv("DATABASE_NAME", default = 'test_db'0),
+  auth_plugin='mysql_native_password'
 )
 
 ser = serial.Serial('/dev/ttyACM0', 9600, timeout=900)
