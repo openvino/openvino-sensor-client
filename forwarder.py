@@ -12,7 +12,7 @@ import subprocess
 import requests
 import mysql.connector
 
-#from enchaintesdk import * 
+from enchaintesdk.enchaintesdk import EnchainteSDK
 
 print("\nSetting up enviroment for vinduinos and weather station")
 
@@ -71,10 +71,10 @@ while True:
   data.update({"humidity005": float(splitted_line[5])})
   data.update({"timestamp": datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')})
 
-  '''  en = EnchainteSDK()
+  en = EnchainteSDK()
   hash = en.write_Json(newJsn)
-  '''
-  data.update({"hash": datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')})
+  
+  data.update({"hash": hash})
 
   try: 
 
