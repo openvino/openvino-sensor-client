@@ -72,7 +72,7 @@ while True:
   data.update({"timestamp": datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')})
 
   en = EnchainteSDK()
-  hash = en.write_Json(data)[0]
+  hash = en.write_Json(json.dumps(data))[0]
   
   data.update({"hash": hash})
 
