@@ -12,7 +12,7 @@ import subprocess
 import requests
 import mysql.connector
 
-#import enchaintesdk
+from enchainte import * as enchainte
 
 print("\nSetting up enviroment for vinduinos and weather station")
 
@@ -29,15 +29,14 @@ redundant_db = mysql.connector.connect(
   user=os.getenv("DATABASE_USERNAME", default = 'test'),
   passwd=os.getenv("DATABASE_PASSWORD", default = 'test123'),
   database=os.getenv("DATABASE_NAME", default = 'test_db'),
-  auth_plugin='mysql_native_password'
 )
 
 ser = serial.Serial('/dev/ttyACM0', 9600, timeout=900)
-disconected = False
+disconnected = False
 
 while True:
 
-  line = ser.readline();
+  line = ser.readline()
 
   if len(line)==0:
       print("Error: Time out")
@@ -72,13 +71,13 @@ while True:
   data.update({"humidity005": float(splitted_line[5])})
   data.update({"timestamp": datetime.fromtimestamp(time.time()).strftime("%Y-%m-%dT%H:%M:%S.00Z")})
 
-  #hash = enchaintesdk.write(data)
+  hash = enchainte.write_Json(data)[0]
 
-  data.update({"hash": str(time.time())})
+  data.update({"hash": hash})
 
   try: 
 
-    if (disconected):
+    if (disconnected):
       db = mysql.connector.connect(
         host=os.getenv("DATABASE_HOST", default = 'localhost'),
         user=os.getenv("DATABASE_USERNAME", default = 'test'),
@@ -86,6 +85,7 @@ while True:
         database=os.getenv("DATABASE_NAME", default = 'test_db'),
         auth_plugin='mysql_native_password'
       )
+      disconnected = False
 
     cursor = db.cursor()
     sql = "INSERT INTO sensor_data (wind_velocity, wind_gust, wind_direction, pressure, rain, temperature, humidity, sensor_id, humidity2, humidity1, humidity05, humidity005, timestamp, hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -94,6 +94,8 @@ while True:
     db.commit()
 
   except:
+
+    disconnected = True
     redundant_cursor = redundant_db.cursor()
     redundant_sql = "INSERT INTO sensor_data (wind_velocity, wind_gust, wind_direction, pressure, rain, temperature, humidity, sensor_id, humidity2, humidity1, humidity05, humidity005, timestamp, hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     redundant_val = tuple([value for _, value in data.items()])
