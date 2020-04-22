@@ -231,7 +231,12 @@ totalRain = 0
 #print returnStatusLine("AS3935",config.AS3935_Present)
 #print "----------------------"
 
+time.sleep(15.0)
+
 currentWindSpeed = weatherStation.current_wind_speed()/1.852
+currentWindGust = weatherStation.get_wind_gust()/1.852
+
+time.sleep(5.0)
 currentWindGust = weatherStation.get_wind_gust()/1.852
 
 data = '{"wind_velocity":' + str(currentWindSpeed)
