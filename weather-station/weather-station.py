@@ -27,6 +27,7 @@ sys.path.append('SDL_Pi_WeatherRack')
 sys.path.append('SDL_Pi_FRAM')
 sys.path.append('Adafruit_ADS1x15')
 sys.path.append('RaspberryPi-AS3935/RPi_AS3935')
+sys.path.append('SDL_Pi_AM2315')
 
 import SDL_DS3231
 import Adafruit_BMP.BMP280 as BMP280
@@ -195,11 +196,10 @@ except:
 
 # Detect AM2315
 try:
-	from tentacle_pi.AM2315 import AM2315
+	import AM2315 
 	try:
-		am2315 = AM2315(0x5c,"/dev/i2c-1")
-		temperature, humidity, crc_check = am2315.sense()
-		# print "AM2315 =", temperature
+		sens = AM2315.AM2315()
+		temperature, humidity, crc_check = sens.read_humidity_temperature_crc()
 		config.AM2315_Present = True
 	except:
 		config.AM2315_Present = False
@@ -262,7 +262,7 @@ totalRain = totalRain + weatherStation.get_current_rain_total()
 data = data + ',"rain":' + str(totalRain)
 
 if (config.AM2315_Present):
-    temperature, humidity, crc_check = am2315.sense()
+    temperature, humidity, crc_check = sens.read_humidity_temperature_crc()
     data = data + ',"temperature":' + str(temperature) 
     data = data + ',"humidity":' + str(humidity)
 else:

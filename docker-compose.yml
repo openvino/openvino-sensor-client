@@ -27,6 +27,7 @@ services:
         devices:
             - "/dev/ttyACM0:/dev/ttyACM0"
             - "/dev/gpiomem:/dev/gpiomem"
+            - "/dev/i2c-1:/dev/i2c-1"
         environment:
             - "DATABASE_HOST=${DATABASE_HOST}"
             - "DATABASE_PORT=${DATABASE_PORT}"
