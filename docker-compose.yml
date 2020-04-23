@@ -5,6 +5,7 @@ services:
     redundant-db:
         image: biarms/mysql:latest
         container_name: database
+        restart: unless-stopped
         ports:
             - 3306:3306
         expose:
@@ -19,10 +20,10 @@ services:
         volumes:
             - redundant-db:/var/lib/mysql
             
-
     openvino-client:
         build: .
         container_name: openvino-client
+        restart: unless-stopped
         privileged: true
         devices:
             - "/dev/ttyACM0:/dev/ttyACM0"
