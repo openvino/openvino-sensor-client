@@ -27,7 +27,7 @@ sys.path.append('SDL_Pi_WeatherRack')
 sys.path.append('SDL_Pi_FRAM')
 sys.path.append('Adafruit_ADS1x15')
 sys.path.append('RaspberryPi-AS3935/RPi_AS3935')
-sys.path.append('SDL_Pi_AM2315')
+sys.path.append('AM2315')
 
 import SDL_DS3231
 import Adafruit_BMP.BMP280 as BMP280
