@@ -12,9 +12,11 @@ import subprocess
 import requests
 import mysql.connector
 
-from enchaintesdk.enchaintesdk import EnchainteSDK
+from enchaintesdk.enchainteClient import EnchainteSDK
 
 print("\nSetting up enviroment for vinduinos and weather station")
+
+apiKey = os.getenv("ENCHAINTE_APIKEY", default = '')
 
 db = mysql.connector.connect(
   host=os.getenv("DATABASE_HOST", default = 'localhost'),
@@ -71,7 +73,7 @@ while True:
   data.update({"humidity005": float(splitted_line[5])})
   data.update({"timestamp": datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')})
 
-  en = EnchainteSDK()
+  en = EnchainteSDK(apiKey)
   hash = en.write_Json(json.dumps(data))[0]
   
   data.update({"hash": hash})
