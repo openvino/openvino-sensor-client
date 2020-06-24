@@ -73,6 +73,7 @@ while True:
   data.update({"humidity005": float(splitted_line[5])})
   data.update({"timestamp": datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')})
 
+  print(data)
   en = EnchainteSDK(apiKey)
   hash = en.write_Json(json.dumps(data))[0]
   
