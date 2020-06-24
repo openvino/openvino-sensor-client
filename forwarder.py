@@ -16,7 +16,7 @@ from enchaintesdk.enchainteClient import EnchainteSDK
 
 print("\nSetting up enviroment for vinduinos and weather station")
 
-apiKey = os.getenv("ENCHAINTE_APIKEY", default = '')
+apiKey = os.getenv("ENCHAINTE_APIKEY", default = 'hola')
 
 db = mysql.connector.connect(
   host=os.getenv("DATABASE_HOST", default = 'localhost'),
