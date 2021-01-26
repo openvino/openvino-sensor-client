@@ -269,9 +269,13 @@ else:
 	data = data + ',"temperature":null,"humidity":null'
 
 if (config.AS3935_Present):
-	data = data + ',"irradiance":' + str(0)
+	data = data + ',"irradiance_ir":' + str(0)
+	data = data + ',"irradiance_uv":' + str(0)
+	data = data + ',"irradiance_vi":' + str(0)
 else:
-	data = data + ',"irradiance":null'
+	data = data + ',"irradiance_ir":null'
+    	data = data + ',"irradiance_uv":null'
+    	data = data + ',"irradiance_vi":null'
 
 if (config.HTU21DF_Present):
 	HTU21DFOut = subprocess.check_output(["htu21dflib/htu21dflib","-l"])
