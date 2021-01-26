@@ -268,6 +268,11 @@ if (config.AM2315_Present):
 else:
 	data = data + ',"temperature":null,"humidity":null'
 
+if (config.AS3935_Present):
+	data = data + ',"irradiance":' + str(0)
+else:
+	data = data + ',"irradiance":null'
+
 if (config.HTU21DF_Present):
 	HTU21DFOut = subprocess.check_output(["htu21dflib/htu21dflib","-l"])
 	splitstring = HTU21DFOut.split()
