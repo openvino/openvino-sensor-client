@@ -95,7 +95,7 @@ while True:
       disconnected = False
 
     cursor = db.cursor()
-    sql = "INSERT INTO sensor_data (wind_velocity, wind_gust, wind_direction, pressure, rain, temperature, humidity, sensor_id, humidity2, humidity1, humidity05, humidity005, irradiance, timestamp, hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = "INSERT INTO sensor_data (wind_velocity, wind_gust, wind_direction, pressure, rain, temperature, humidity, sensor_id, humidity2, humidity1, humidity05, humidity005, irradiance_uv, irradiance_ir, irradiance_vi, timestamp, hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     val = tuple([value for _, value in data.items()])
     cursor.execute(sql, val)
     db.commit()
@@ -106,7 +106,7 @@ while True:
     disconnected = True
     print("Inserted into redundant database: " + json.dumps(data) + " [battery = " + splitted_line[9] + "]")
     redundant_cursor = redundant_db.cursor()
-    redundant_sql = "INSERT INTO sensor_data (wind_velocity, wind_gust, wind_direction, pressure, rain, temperature, humidity, sensor_id, humidity2, humidity1, humidity05, humidity005, irradiance, timestamp, hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    redundant_sql = "INSERT INTO sensor_data (wind_velocity, wind_gust, wind_direction, pressure, rain, temperature, humidity, sensor_id, humidity2, humidity1, humidity05, humidity005, irradiance_uv, irradiance_ir, irradiance_vi, timestamp, hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     redundant_val = tuple([value for _, value in data.items()])
     redundant_cursor.execute(redundant_sql, redundant_val)
     redundant_db.commit()
