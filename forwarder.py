@@ -12,19 +12,24 @@ import subprocess
 import requests
 import mysql.connector
 
-from enchaintesdk.enchainteClient import EnchainteSDK
+from enchaintesdk.enchainteClient import EnchainteClient
+from enchaintesdk.entity.hash import Hash
+import json
 
 print("\nSetting up enviroment for vinduinos and weather station")
 
 apiKey = os.getenv("ENCHAINTE_APIKEY", default = 'hola')
 
-db = mysql.connector.connect(
-  host=os.getenv("DATABASE_HOST", default = 'localhost'),
-  user=os.getenv("DATABASE_USERNAME", default = 'test'),
-  passwd=os.getenv("DATABASE_PASSWORD", default = 'test123'),
-  database=os.getenv("DATABASE_NAME", default = 'test_db'),
-  auth_plugin='mysql_native_password'
-)
+try:
+  db = mysql.connector.connect(
+    host=os.getenv("DATABASE_HOST", default = 'localhost'),
+    user=os.getenv("DATABASE_USERNAME", default = 'test'),
+    passwd=os.getenv("DATABASE_PASSWORD", default = 'test123'),
+    database=os.getenv("DATABASE_NAME", default = 'test_db'),
+    auth_plugin='mysql_native_password'
+  )
+except mysql.connector.Error as err:
+  disconnected = True
 
 redundant_db = mysql.connector.connect(
   host='database',
@@ -36,17 +41,23 @@ redundant_db = mysql.connector.connect(
 ser = serial.Serial('/dev/ttyACM0', 9600, timeout=900)
 disconnected = False
 
-while True:
+#Enchainte Variable
+#deferred_dic = {}
+en = EnchainteClient(apiKey)
 
+print("\nSet up ready")
+
+while True:
+ try:
   line = ser.readline()
 
   if len(line)==0:
       print("Error: Time out")
       sys.exit()
 
-  script = ["python2", "weather-station.py"]    
+  script = ["python2", "weather-station.py"]
   process = subprocess.check_output(" ".join(script),
-                                    shell=True,  
+                                    shell=True,
                                     env={"PYTHONPATH": "weather-station/"})
   weather_station_info = process.decode("utf-8")
 
@@ -77,12 +88,28 @@ while True:
   data.update({"timestamp": datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')})
 
   print(data)
-  en = EnchainteSDK(apiKey)
-  hash = en.write_Json(json.dumps(data))[0]
-  
-  data.update({"hash": hash})
 
-  try: 
+  '''
+  for d in deferred_dic:
+        if deferred_dic[d].promise == False:
+            print("Error at hash " + d +
+                  ". Exception: " + def_dic[d].reject)
+        if deferred_dic[d].promise == True:
+            print("Hash " + d +
+                  " sent correctly.")
+            del deferred_dic[d]
+  '''
+  print('Sending to Enchainte')
+  try:
+    hs = Hash.fromJson(json.dumps(data))
+    en.write(hs.getHash(), "hash")
+    data.update({"hash": hs.getHash()})
+  except BaseException as e:
+    print("Error sending value to Enchainte api.")
+    print(e)
+  print('sending to DB')
+
+  try:
 
     if (disconnected):
       db = mysql.connector.connect(
@@ -101,8 +128,17 @@ while True:
     db.commit()
     print("Inserted into echo database: " + json.dumps(data) + " [battery = " + splitted_line[9] + "]")
 
-  except Exception as e:
 
+  except BaseException as e:
+    try:
+      redundant_db.ping(reconnect=True, attempts=3, delay=5)
+    except mysql.connector.Error as err:
+      redundant_db = mysql.connector.connect(
+        host='database',
+        user=os.getenv("DATABASE_USERNAME", default='test'),
+        passwd=os.getenv("DATABASE_PASSWORD", default='test123'),
+        database=os.getenv("DATABASE_NAME", default='test_db'),
+      )
     disconnected = True
     print("Inserted into redundant database: " + json.dumps(data) + " [battery = " + splitted_line[9] + "]")
     redundant_cursor = redundant_db.cursor()
@@ -110,3 +146,7 @@ while True:
     redundant_val = tuple([value for _, value in data.items()])
     redundant_cursor.execute(redundant_sql, redundant_val)
     redundant_db.commit()
+
+ except BaseException as e:
+  print("Error while running the forwarder:")
+  print(e)
