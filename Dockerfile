@@ -6,8 +6,8 @@ RUN apt-get update && apt-get -y upgrade
 RUN apt-get install -y python-pip libi2c-dev python-dev python-smbus i2c-tools
 RUN python2 -m pip install tentacle_pi RPi.GPIO
 
-RUN python3 -m pip install pyserial requests mysql-connector-python numpy
-RUN python3 -m pip --no-cache-dir install --extra-index-url https://test.pypi.org/simple/ enchaintesdk==0.0.8.5
+RUN python3 -m pip install pyserial requests mysql-connector-python
+RUN python3 -m pip --no-cache-dir install enchaintesdk==0.1.0
 
 COPY weather-station .
 COPY forwarder.py .

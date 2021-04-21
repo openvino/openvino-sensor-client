@@ -12,9 +12,8 @@ import subprocess
 import requests
 import mysql.connector
 
-from enchaintesdk.enchainteClient import EnchainteClient
-from enchaintesdk.entity.hash import Hash
-import json
+
+from enchaintesdk import EnchainteClient, Message, EnchainteSDKException
 
 print("\nSetting up enviroment for vinduinos and weather station")
 
@@ -44,9 +43,7 @@ redundant_db = mysql.connector.connect(
 ser = serial.Serial('/dev/ttyACM0', 9600, timeout=900)
 disconnected = False
 
-# Enchainte Variable
-#deferred_dic = {}
-en = EnchainteClient(apiKey)
+enchainte = EnchainteClient(apiKey)
 
 print("\nSet up ready")
 
@@ -93,22 +90,12 @@ while True:
 
         print(data)
 
-        '''
-        for d in deferred_dic:
-              if deferred_dic[d].promise == False:
-                  print("Error at hash " + d +
-                        ". Exception: " + def_dic[d].reject)
-              if deferred_dic[d].promise == True:
-                  print("Hash " + d +
-                        " sent correctly.")
-                  del deferred_dic[d]
-        '''
         print('Sending to Enchainte')
         try:
-            hs = Hash.fromJson(json.dumps(data))
-            en.write(hs.getHash(), "hash")
-            data.update({"hash": hs.getHash()})
-        except BaseException as e:
+            message = Message.fromDict(data)
+            enchainte.sendMessages([message])
+            data.update({"hash": message.getHash()})
+        except EnchainteSDKException as e:
             print("Error sending value to Enchainte api.")
             print(e)
         print('sending to DB')
