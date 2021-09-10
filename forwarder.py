@@ -20,7 +20,7 @@ print("\nSetting up enviroment for vinduinos and weather station")
 sleep_timer = 2
 sleep_max = 128
 
-apiKey = os.getenv("ENCHAINTE_APIKEY", default='hola')
+apiKey = os.getenv("BLOOCK_APIKEY", default='apikey')
 
 try:
     db = mysql.connector.connect(
