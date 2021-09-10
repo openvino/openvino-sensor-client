@@ -13,7 +13,7 @@ import requests
 import mysql.connector
 
 
-from enchaintesdk import EnchainteClient, Message, EnchainteSDKException
+from bloock import BloockClient, Record,BloockException
 
 print("\nSetting up enviroment for vinduinos and weather station")
 
@@ -43,8 +43,7 @@ redundant_db = mysql.connector.connect(
 ser = serial.Serial('/dev/ttyACM0', 9600, timeout=900)
 disconnected = False
 
-enchainte = EnchainteClient(apiKey)
-
+bloock = BloockClient(apiKey)
 print("\nSet up ready")
 
 while True:
@@ -90,13 +89,13 @@ while True:
 
         print(data)
 
-        print('Sending to Enchainte')
+        print('Sending to Bloock')
         try:
-            message = Message.fromDict(data)
-            enchainte.sendMessages([message])
-            data.update({"hash": message.getHash()})
-        except EnchainteSDKException as e:
-            print("Error sending value to Enchainte api.")
+            record = Record.fromDict(data)
+            bloock.sendRecords([record])
+            data.update({"hash": record.getHash()})
+        except BloockException as e:
+            print("Error sending value to Bloock api.")
             print(e)
         print('sending to DB')
 
